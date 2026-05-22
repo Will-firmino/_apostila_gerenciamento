@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apostila — Design Thinking & Lean e Agilidade</title>
+
+  <style>
+    :root {
+      --azul-escuro: #0b3b60;
+      --azul-medio: #1a5276;
+      --azul-claro: #339cff;
+      --azul-suave: #e8f4fd;
+      --verde: #1e8449;
+      --amarelo: #d4ac0d;
+      --vermelho: #c0392b;
+      --roxo: #6c3483;
+      --laranja: #ca6f1e;
+      --cinza-bg: #f4f6f9;
+      --cinza-borda: #dde3ec;
+      --texto: #2c3e50;
+      --sidebar-w: 280px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: var(--texto);
+      background: var(--cinza-bg);
+      line-height: 1.7;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--azul-escuro);
+      overflow-y: auto;
+      z-index: 100;
+    }
+    .sidebar-header {
+      padding: 24px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar-header h1 { color:#fff; font-size:15px; font-weight:700; line-height:1.4; }
+    .sidebar-header p { color: var(--azul-claro); font-size:12px; margin-top:4px; }
+    .sidebar nav { padding: 12px 0 40px; }
+    .nav-group-title {
+      color: rgba(255,255,255,0.4);
+      font-size: 10px; font-weight:700; letter-spacing:1.5px;
+      text-transform: uppercase;
+      padding: 16px 20px 4px;
+    }
+    .sidebar nav a {
+      display: block; color: rgba(255,255,255,0.75);
+      text-decoration: none; font-size: 13px;
+      padding: 7px 20px;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .sidebar nav a:hover, .sidebar nav a.ativo {
+      color: #fff;
+      background: rgba(51,156,255,0.15);
+      border-left-color: var(--azul-claro);
+    }
+    .sidebar nav a .num {
+      display: inline-block;
+      background: rgba(51,156,255,0.25); color: var(--azul-claro);
+      font-size:10px; font-weight:700;
+      width:20px; height:20px; line-height:20px;
+      text-align:center; border-radius:4px; margin-right:8px;
+    }
+    .sidebar::-webkit-scrollbar { width:4px; }
+    .sidebar::-webkit-scrollbar-track { background:transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:2px; }
+
+    /* ── Conteúdo ── */
+    .content { margin-left: var(--sidebar-w); padding: 0 0 80px; }
+
+    .hero {
+      background: linear-gradient(135deg, var(--azul-escuro) 0%, var(--azul-medio) 100%);
+      color:#fff; padding: 60px 60px 50px;
+    }
+    .hero h1 { font-size:32px; font-weight:800; margin-bottom:10px; }
+    .hero p { font-size:16px; opacity:.85; max-width:640px; }
+    .badges { margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; }
+    .badge {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color:#fff; padding:4px 12px; border-radius:20px;
+      font-size:12px; font-weight:600;
+    }
+
+    section { max-width:900px; margin:0 auto; padding:50px 60px 10px; }
+    section:first-of-type { padding-top:40px; }
+
+    .section-title {
+      display:flex; align-items:center; gap:14px;
+      margin-bottom:24px; padding-bottom:14px;
+      border-bottom: 2px solid var(--cinza-borda);
+    }
+    .section-num {
+      background: var(--azul-claro); color:#fff;
+      font-size:13px; font-weight:800;
+      min-width:36px; height:36px;
+      display:flex; align-items:center; justify-content:center;
+      border-radius:8px;
+    }
+    .section-title h2 { font-size:22px; color: var(--azul-escuro); }
+
+    h3 {
+      font-size:16px; color: var(--azul-medio);
+      margin:28px 0 10px;
+      padding-left:12px;
+      border-left:3px solid var(--azul-claro);
+    }
+
+    p { margin-bottom:14px; font-size:15px; }
+
+    /* ── Caixas informativas ── */
+    .box { border-radius:8px; padding:16px 20px; margin:20px 0; font-size:14px; }
+    .box-dica  { background:#eaf6fb; border-left:4px solid #2980b9; }
+    .box-aviso { background:#fef9e7; border-left:4px solid var(--amarelo); }
+    .box-info  { background:#eafaf1; border-left:4px solid var(--verde); }
+    .box-erro  { background:#fdedec; border-left:4px solid var(--vermelho); }
+    .box-roxo  { background:#f4ecf7; border-left:4px solid var(--roxo); }
+    .box-laranja { background:#fdf2e9; border-left:4px solid var(--laranja); }
+    .box strong { font-weight:700; display:block; margin-bottom:4px; }
+    .box ul, .box ol { padding-left:18px; margin-top:6px; line-height:2; }
+
+    /* ── Diagrama ── */
+    .diagrama {
+      background:#1a2332; color:#a9b7c6;
+      font-family:'Courier New', monospace; font-size:13px;
+      padding:24px; border-radius:8px; margin:20px 0;
+      line-height:1.8; white-space:pre;
+    }
+    .diagrama .dest { color: var(--azul-claro); font-weight:700; }
+    .diagrama .verde { color:#6dbf67; }
+    .diagrama .amarelo { color:#ffd700; }
+    .diagrama .roxo { color:#c792ea; }
+    .diagrama .laranja { color:#f78c6c; }
+
+    /* ── Tabela ── */
+    table { width:100%; border-collapse:collapse; margin:20px 0; font-size:14px; }
+    th { background: var(--azul-escuro); color:#fff; padding:10px 14px; text-align:left; font-weight:600; }
+    td { padding:9px 14px; border-bottom:1px solid var(--cinza-borda); }
+    tr:nth-child(even) td { background: var(--azul-suave); }
+
+    code:not([class]) {
+      background:#e8eaf0; color:#c0392b;
+      padding:2px 6px; border-radius:4px;
+      font-size:13px; font-family:'Courier New', monospace;
+    }
+
+    hr.divisor { border:none; border-top:1px solid var(--cinza-borda); margin:40px 0; }
+
+    /* ── Cards de etapas ── */
+    .cards-etapas {
+      display:grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+      gap:14px; margin:24px 0;
+    }
+    .card-etapa {
+      background:#fff; border:1.5px solid var(--cinza-borda);
+      border-radius:10px; padding:18px 16px;
+      border-top:4px solid var(--azul-claro);
+    }
+    .card-etapa .num { font-size:11px; font-weight:700; color: var(--azul-claro); text-transform:uppercase; letter-spacing:.08em; }
+    .card-etapa h4 { font-size:15px; font-weight:700; color: var(--azul-escuro); margin:4px 0 8px; }
+    .card-etapa p { font-size:13px; color:#555; margin:0; line-height:1.55; }
+
+    /* Cores variadas para os cards */
+    .card-etapa.c1 { border-top-color:#e74c3c; }
+    .card-etapa.c1 .num { color:#e74c3c; }
+    .card-etapa.c2 { border-top-color:#e67e22; }
+    .card-etapa.c2 .num { color:#e67e22; }
+    .card-etapa.c3 { border-top-color:#f1c40f; }
+    .card-etapa.c3 .num { color:#ca6f1e; }
+    .card-etapa.c4 { border-top-color:#2ecc71; }
+    .card-etapa.c4 .num { color:#1a8a4a; }
+    .card-etapa.c5 { border-top-color:#3498db; }
+    .card-etapa.c5 .num { color:#1a6fa0; }
+
+    /* ── Linha do tempo / processo ── */
+    .processo {
+      display:flex; flex-direction:column; gap:0; margin:24px 0;
+      position:relative;
+    }
+    .processo::before {
+      content:''; position:absolute;
+      left:22px; top:28px; bottom:28px; width:2px;
+      background: var(--cinza-borda);
+    }
+    .processo-item {
+      display:flex; gap:20px; align-items:flex-start; padding:12px 0;
+      position:relative;
+    }
+    .processo-num {
+      width:44px; height:44px; flex-shrink:0;
+      background: var(--azul-claro); color:#fff;
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      font-size:15px; font-weight:800; z-index:1;
+    }
+    .processo-body { flex:1; }
+    .processo-body h4 { font-size:15px; font-weight:700; color: var(--azul-escuro); margin-bottom:4px; }
+    .processo-body p { font-size:14px; margin:0; color:#555; }
+
+    /* ── Comparativo ── */
+    .comparativo {
+      display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0;
+    }
+    .comp-card {
+      background:#fff; border:1.5px solid var(--cinza-borda);
+      border-radius:10px; padding:18px;
+    }
+    .comp-card h4 {
+      font-size:14px; font-weight:700; margin-bottom:10px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .comp-card ul { padding-left:16px; font-size:13.5px; line-height:2; color:#444; }
+
+    /* ── Destaque inline ── */
+    .tag-verde  { background:#eafaf1; color:var(--verde); border:1px solid #a9dfbf; border-radius:4px; padding:1px 7px; font-size:12px; font-weight:700; }
+    .tag-azul   { background:var(--azul-suave); color:var(--azul-medio); border:1px solid #a9cce3; border-radius:4px; padding:1px 7px; font-size:12px; font-weight:700; }
+    .tag-roxo   { background:#f4ecf7; color:var(--roxo); border:1px solid #d7bde2; border-radius:4px; padding:1px 7px; font-size:12px; font-weight:700; }
+    .tag-laranja{ background:#fdf2e9; color:var(--laranja); border:1px solid #f0b27a; border-radius:4px; padding:1px 7px; font-size:12px; font-weight:700; }
+
+    /* ── Exemplo real ── */
+    .exemplo-real {
+      background:#fff; border:1.5px solid var(--cinza-borda);
+      border-radius:10px; padding:20px 22px; margin:20px 0;
+    }
+    .exemplo-real .label {
+      font-size:11px; font-weight:700; letter-spacing:.08em;
+      text-transform:uppercase; color: var(--azul-claro); margin-bottom:8px;
+    }
+    .exemplo-real h4 { font-size:16px; font-weight:700; color: var(--azul-escuro); margin-bottom:10px; }
+    .exemplo-real p  { font-size:14px; margin-bottom:10px; color:#444; }
+    .exemplo-real p:last-child { margin-bottom:0; }
+
+    @media (max-width:768px) {
+      .sidebar { display:none; }
+      .content { margin-left:0; }
+      section { padding:30px 24px 10px; }
+      .hero { padding:40px 24px 30px; }
+      .comparativo { grid-template-columns:1fr; }
+      .cards-etapas { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width:480px) {
+      .cards-etapas { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ══════════════════════════ SIDEBAR ══════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h1>Design Thinking<br>&amp; Lean e Agilidade</h1>
+    <p>Apostila — ADS · Ger. Ágil de Projetos</p>
+  </div>
+  <nav>
+    <div class="nav-group-title">Parte I — Design Thinking</div>
+    <a href="#s1"><span class="num">1</span> O que é Design Thinking?</a>
+    <a href="#s2"><span class="num">2</span> Empatia</a>
+    <a href="#s3"><span class="num">3</span> Definição do Problema</a>
+    <a href="#s4"><span class="num">4</span> Ideação</a>
+    <a href="#s5"><span class="num">5</span> Prototipação</a>
+    <a href="#s6"><span class="num">6</span> Testes</a>
+    <a href="#s7"><span class="num">7</span> DT no Desenvolvimento de Software</a>
+
+    <div class="nav-group-title">Parte II — Lean</div>
+    <a href="#s8"><span class="num">8</span> O que é Lean?</a>
+    <a href="#s9"><span class="num">9</span> Os 7 Desperdícios</a>
+    <a href="#s10"><span class="num">10</span> Princípios Lean</a>
+    <a href="#s11"><span class="num">11</span> Lean no Software</a>
+
+    <div class="nav-group-title">Parte III — Agilidade</div>
+    <a href="#s12"><span class="num">12</span> Manifesto Ágil</a>
+    <a href="#s13"><span class="num">13</span> Lean vs Ágil: Diferenças</a>
+    <a href="#s14"><span class="num">14</span> Lean + DT + Ágil Juntos</a>
+    <a href="#s15"><span class="num">15</span> Casos Práticos</a>
+    <a href="#s16"><span class="num">16</span> Resumo e Mapa Mental</a>
+  </nav>
+</aside>
+
+<!-- ══════════════════════════ CONTEÚDO ════════════════════════════════════ -->
+<main class="content">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Design Thinking &amp; Lean e Agilidade</h1>
+    <p>Apostila completa para o curso de Análise e Desenvolvimento de Sistemas. Fundamentos, exemplos práticos e
+      aplicação direta no desenvolvimento de software.</p>
+    <div class="badges">
+      <span class="badge">Design Thinking</span>
+      <span class="badge">Lean Software</span>
+      <span class="badge">Manifesto Ágil</span>
+      <span class="badge">Exemplos Reais</span>
+      <span class="badge">ADS</span>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 1 ════════════════════════════════ -->
+  <section id="s1">
+    <div class="section-title">
+      <div class="section-num">1</div>
+      <h2>O que é Design Thinking?</h2>
+    </div>
+
+    <p><strong>Design Thinking</strong> é uma abordagem de resolução de problemas centrada no ser humano. Em vez de
+      partir da tecnologia disponível ou dos objetivos de negócio, ela parte das necessidades reais das pessoas —
+      os usuários finais — para então criar soluções inovadoras.</p>
+
+    <p>O termo foi popularizado pela IDEO, consultoria americana de design, e pela escola d.school da
+      Universidade de Stanford nos anos 2000. Hoje é adotado por empresas como Apple, Google, Airbnb e IBM para
+      orientar o desenvolvimento de produtos e serviços.</p>
+
+    <div class="box box-dica">
+      <strong>💡 Definição simples</strong>
+      Design Thinking é um processo iterativo que busca entender o usuário, desafiar suposições e redefinir
+      problemas para identificar soluções alternativas que podem não ser evidentes com o nível inicial de
+      entendimento do problema.
+    </div>
+
+    <h3>Por que usar Design Thinking no desenvolvimento de software?</h3>
+
+    <p>Muitos sistemas falham não por causa de bugs técnicos, mas porque foram construídos resolvendo o problema
+      <em>errado</em>. O DT existe para garantir que a equipe resolva o problema <em>certo</em>, da forma
+      <em>certa</em>, para as pessoas <em>certas</em>.</p>
+
+    <table>
+      <tr>
+        <th>Abordagem tradicional</th>
+        <th>Com Design Thinking</th>
+      </tr>
+      <tr>
+        <td>O cliente descreve o que quer</td>
+        <td>A equipe observa o que o usuário <em>precisa</em></td>
+      </tr>
+      <tr>
+        <td>Requisitos definidos no início, fixos</td>
+        <td>Descoberta contínua, evolução do entendimento</td>
+      </tr>
+      <tr>
+        <td>Feedback apenas no final do projeto</td>
+        <td>Validação antecipada com protótipos</td>
+      </tr>
+      <tr>
+        <td>Alto custo de mudança tardio</td>
+        <td>Erros baratos e rápidos (fail fast, learn fast)</td>
+      </tr>
+      <tr>
+        <td>Foco em funcionalidades</td>
+        <td>Foco na experiência e no valor entregue</td>
+      </tr>
+    </table>
+
+    <h3>As 5 etapas do Design Thinking</h3>
+
+    <p>O processo é dividido em 5 fases não-lineares — elas podem e devem ser revisitadas quantas vezes forem
+      necessárias:</p>
+
+    <div class="cards-etapas">
+      <div class="card-etapa c1">
+        <div class="num">Etapa 1</div>
+        <h4>🔍 Empatia</h4>
+        <p>Entender profundamente o usuário: seus comportamentos, motivações, dores e desejos.</p>
+      </div>
+      <div class="card-etapa c2">
+        <div class="num">Etapa 2</div>
+        <h4>🎯 Definição</h4>
+        <p>Sintetizar o que foi descoberto e formular o problema real a ser resolvido.</p>
+      </div>
+      <div class="card-etapa c3">
+        <div class="num">Etapa 3</div>
+        <h4>💡 Ideação</h4>
+        <p>Gerar o maior número possível de ideias e soluções criativas sem julgamento.</p>
+      </div>
+      <div class="card-etapa c4">
+        <div class="num">Etapa 4</div>
+        <h4>🛠️ Prototipação</h4>
+        <p>Construir versões simples e baratas das melhores ideias para torná-las tangíveis.</p>
+      </div>
+      <div class="card-etapa c5">
+        <div class="num">Etapa 5</div>
+        <h4>✅ Teste</h4>
+        <p>Validar os protótipos com usuários reais, aprender com o feedback e iterar.</p>
+      </div>
+    </div>
+
+    <div class="box box-aviso">
+      <strong>⚠️ Atenção: o processo NÃO é linear</strong>
+      Na prática, você vai e volta entre as etapas. Um teste revelará um problema novo → você volta à Empatia.
+      Uma prototipação pode fazer você repensar a Definição. Isso é esperado e desejado.
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 2 ════════════════════════════════ -->
+  <section id="s2">
+    <div class="section-title">
+      <div class="section-num">2</div>
+      <h2>Etapa 1 — Empatia</h2>
+    </div>
+
+    <p>A empatia é a base do Design Thinking. Significa colocar-se no lugar do usuário para entender
+      genuinamente como ele pensa, o que sente, o que faz e o que o motiva — sem fazer suposições.</p>
+
+    <div class="box box-dica">
+      <strong>💡 Empatia ≠ Simpatia</strong>
+      Simpatia é reconhecer o problema do outro. Empatia é <em>vivenciá-lo</em>. No DT, precisamos ir a campo,
+      observar, conversar e escutar sem filtros, em vez de supor que já sabemos o que o usuário precisa.
+    </div>
+
+    <h3>Técnicas de Empatia</h3>
+
+    <table>
+      <tr>
+        <th>Técnica</th>
+        <th>Como funciona</th>
+        <th>Quando usar</th>
+      </tr>
+      <tr>
+        <td><strong>Entrevistas em profundidade</strong></td>
+        <td>Conversas abertas e semi-estruturadas com usuários reais</td>
+        <td>Para descobrir motivações, crenças e frustrações</td>
+      </tr>
+      <tr>
+        <td><strong>Observação contextual</strong></td>
+        <td>Observar o usuário no seu ambiente natural de uso</td>
+        <td>Para entender comportamentos que o usuário não verbaliza</td>
+      </tr>
+      <tr>
+        <td><strong>Shadowing</strong></td>
+        <td>Acompanhar o usuário durante o seu dia a dia</td>
+        <td>Para sistemas usados no trabalho ou em rotinas complexas</td>
+      </tr>
+      <tr>
+        <td><strong>Personas</strong></td>
+        <td>Personagem fictício que representa o perfil do usuário-tipo</td>
+        <td>Para alinhar a equipe sobre para quem está desenvolvendo</td>
+      </tr>
+      <tr>
+        <td><strong>Mapa de Empatia</strong></td>
+        <td>Ferramenta visual para organizar o que o usuário diz, pensa, faz e sente</td>
+        <td>Para sintetizar insights das pesquisas</td>
+      </tr>
+      <tr>
+        <td><strong>Jornada do Usuário</strong></td>
+        <td>Diagrama que mapeia cada passo do usuário ao interagir com o sistema</td>
+        <td>Para encontrar pontos de dor e oportunidades</td>
+      </tr>
+    </table>
+
+    <h3>Mapa de Empatia</h3>
+
+    <div class="diagrama"><span class="dest">MAPA DE EMPATIA — Estrutura</span>
+
+┌────────────────────────────────────────────────────────────────┐
+│                    <span class="amarelo">QUEM É O USUÁRIO?</span>                          │
+│              Nome, perfil, contexto de uso                     │
+├───────────────────────┬────────────────────────────────────────┤
+│  <span class="verde">O QUE ELE PENSA E SENTE?</span>   │        <span class="verde">O QUE ELE VÊ?</span>              │
+│  Preocupações,        │  Ambiente, concorrentes,               │
+│  aspirações,          │  o que os amigos fazem,                │
+│  sonhos               │  o que o mercado oferece               │
+├───────────────────────┼────────────────────────────────────────┤
+│  <span class="verde">O QUE ELE OUVE?</span>           │        <span class="verde">O QUE ELE FAZ?</span>             │
+│  O que colegas,       │  Comportamento público,                │
+│  influenciadores      │  ações no sistema,                     │
+│  e mídia dizem        │  hábitos do dia a dia                  │
+├───────────────────────┴────────────────────────────────────────┤
+│      <span class="roxo">DORES</span>: Medos, frustrações, obstáculos                    │
+│      <span class="laranja">GANHOS</span>: Desejos, medidas de sucesso, benefícios          │
+└────────────────────────────────────────────────────────────────┘</div>
+
+    <div class="exemplo-real">
+      <div class="label">📌 Exemplo Prático</div>
+      <h4>Sistema de Agendamento de Consultas Médicas</h4>
+      <p><strong>Contexto:</strong> Uma clínica quer desenvolver um sistema para os pacientes agendarem consultas
+        online. Antes de desenvolver qualquer tela, a equipe realiza entrevistas.</p>
+      <p><strong>Entrevista revelou:</strong> "Eu até tento usar o app, mas desisto porque ele trava quando estou
+        com 3G fraco. Aí ligo pro consultório mesmo, que é mais garantido." — Paciente, 45 anos.</p>
+      <p><strong>Insight gerado:</strong> O sistema precisa funcionar em conexões lentas. Uma solução técnica de
+        baixa banda ou modo offline pode ser mais valiosa do que novas funcionalidades visuais.</p>
+    </div>
+
+    <h3>Como criar uma Persona</h3>
+
+    <div class="diagrama"><span class="dest">PERSONA — Exemplo: Sistema de Agendamento</span>
+
+<span class="amarelo">Nome:</span> Marcos Ferreira
+<span class="amarelo">Idade:</span> 38 anos | <span class="amarelo">Profissão:</span> Mecânico | <span class="amarelo">Cidade:</span> São Paulo - SP
+
+<span class="verde">PERFIL COMPORTAMENTAL</span>
+  • Usa smartphone Android de intermediário
+  • Conexão móvel 4G instável no trabalho
+  • Prefere resolver tudo pelo celular, evita ligar
+  • Não tem paciência para telas complexas
+
+<span class="roxo">DORES</span>
+  • "O sistema trava quando estou com sinal fraco"
+  • "Odeio preencher o mesmo cadastro toda vez"
+  • "Nunca sei se o agendamento foi confirmado"
+
+<span class="laranja">OBJETIVOS</span>
+  • Agendar consulta em menos de 2 minutos
+  • Receber confirmação por WhatsApp
+  • Poder remarcar sem ligar para a clínica</div>
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 3 ════════════════════════════════ -->
+  <section id="s3">
+    <div class="section-title">
+      <div class="section-num">3</div>
+      <h2>Etapa 2 — Definição do Problema</h2>
+    </div>
+
+    <p>Após coletar os dados da fase de Empatia, a equipe se reúne para sintetizar tudo e formular o
+      <strong>problema real</strong> a ser resolvido. Esta é provavelmente a etapa mais crítica — uma
+      definição errada invalida todas as etapas seguintes.</p>
+
+    <div class="box box-aviso">
+      <strong>⚠️ O problema do problema errado</strong>
+      Um erro clássico: a clínica pediu "melhore a velocidade do sistema". A equipe obedeceu e otimizou o banco
+      de dados. Mas o problema real, descoberto nas entrevistas, era que o <em>fluxo de navegação tinha 9 telas</em>
+      para um agendamento simples. A velocidade do banco não era o gargalo.
+    </div>
+
+    <h3>A ferramenta: Point of View (POV)</h3>
+
+    <p>A declaração POV é uma frase-modelo que sintetiza o problema centrado no usuário:</p>
+
+    <div class="diagrama"><span class="dest">FÓRMULA DO POV</span>
+
+<span class="amarelo">[Usuário/Persona]</span> precisa de <span class="verde">[necessidade]</span>
+porque <span class="roxo">[insight descoberto na empatia]</span>
+
+──────────────────────────────────────────────────────────
+
+<span class="dest">Exemplos:</span>
+
+❌ <span class="laranja">POV fraco (solução disfarçada de problema):</span>
+"O paciente precisa de um app mais rápido."
+
+✅ <span class="verde">POV forte (centrado na necessidade real):</span>
+"Marcos, o mecânico, precisa de uma forma de agendar
+consultas sem depender de boa conexão de internet,
+porque seu trabalho o mantém em galpões com sinal
+de celular instável durante todo o dia."
+
+──────────────────────────────────────────────────────────
+<span class="dest">Diferença:</span>
+O POV fraco já traz uma solução embutida ("mais rápido").
+O POV forte descreve a necessidade e o contexto, abrindo
+espaço para soluções criativas que não eram óbvias.</div>
+
+    <h3>Como Might We? (HMW)</h3>
+
+    <p>A técnica <strong>"How Might We?"</strong> (Como Poderíamos?) transforma o POV em perguntas que abrem
+      possibilidades de solução:</p>
+
+    <div class="exemplo-real">
+      <div class="label">📌 Exemplo — Transformando POV em HMW</div>
+      <h4>A partir do POV do Marcos (mecânico)</h4>
+      <p>• <strong>Como poderíamos</strong> fazer o agendamento funcionar sem internet?</p>
+      <p>• <strong>Como poderíamos</strong> reduzir o processo a apenas 1 passo?</p>
+      <p>• <strong>Como poderíamos</strong> confirmar o agendamento por outro canal (SMS, WhatsApp)?</p>
+      <p>• <strong>Como poderíamos</strong> salvar os dados do paciente para não precisar preencher novamente?</p>
+      <p>Cada pergunta HMW vai se tornar uma oportunidade de ideação na próxima etapa.</p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 4 ════════════════════════════════ -->
+  <section id="s4">
+    <div class="section-title">
+      <div class="section-num">4</div>
+      <h2>Etapa 3 — Ideação</h2>
+    </div>
+
+    <p>Com o problema bem definido, a equipe gera o maior número possível de soluções criativas. A regra
+      principal é: <strong>quantidade antes de qualidade</strong>. A crítica e o julgamento são proibidos
+      durante a geração de ideias.</p>
+
+    <h3>Principais técnicas de Ideação</h3>
+
+    <table>
+      <tr>
+        <th>Técnica</th>
+        <th>Como funciona</th>
+        <th>Quantidade ideal</th>
+      </tr>
+      <tr>
+        <td><strong>Brainstorming</strong></td>
+        <td>Sessão livre de geração de ideias em grupo, sem críticas</td>
+        <td>20–100 ideias em 30 min</td>
+      </tr>
+      <tr>
+        <td><strong>Brainwriting (6-3-5)</strong></td>
+        <td>6 pessoas, 3 ideias cada, 5 rodadas de 5 minutos. Escrito, sem falar</td>
+        <td>108 ideias em 30 min</td>
+      </tr>
+      <tr>
+        <td><strong>Crazy 8's</strong></td>
+        <td>Dobrar papel em 8 partes, 1 ideia por parte em 8 minutos</td>
+        <td>8 variações visuais por pessoa</td>
+      </tr>
+      <tr>
+        <td><strong>SCAMPER</strong></td>
+        <td>Substituir, Combinar, Adaptar, Modificar, Propor novo uso, Eliminar, Reorganizar</td>
+        <td>Análise sistemática de ideias existentes</td>
+      </tr>
+      <tr>
+        <td><strong>Mapa Mental</strong></td>
+        <td>Diagrama visual que parte do problema central e expande por associações</td>
+        <td>Ilimitado, expansivo</td>
+      </tr>
+    </table>
+
+    <h3>Como selecionar as melhores ideias</h3>
+
+    <p>Após gerar muitas ideias, a equipe usa critérios para priorizá-las. A matriz 2x2 é uma ferramenta simples
+      e eficaz:</p>
+
+    <div class="diagrama"><span class="dest">MATRIZ DE PRIORIZAÇÃO DE IDEIAS</span>
+
+          <span class="verde">ALTO IMPACTO</span>
+               │
+               │   Faça depois   │   Faça primeiro! ✅
+               │   (high impact, │   (high impact,
+               │   hard to do)   │   easy to do)
+               │─────────────────┼────────────────────→ <span class="amarelo">FÁCIL DE IMPLEMENTAR</span>
+               │   Descarte      │   Faça se sobrar tempo
+               │   (low impact,  │   (low impact,
+               │   hard to do)   │   easy to do)
+               │
+          <span class="laranja">BAIXO IMPACTO</span>
+
+──────────────────────────────────────────────
+Ideia A: Modo offline        → Alto impacto + relativamente fácil  ✅ PRIORIDADE
+Ideia B: Chat com médico     → Alto impacto + difícil              → Sprint futuro
+Ideia C: Tema escuro         → Baixo impacto + fácil               → Backlog
+Ideia D: Integração com TISS → Baixo impacto + muito difícil       → Descartada</div>
+
+    <div class="box box-info">
+      <strong>✅ Regras de ouro do Brainstorming</strong>
+      <ul>
+        <li>Adiar o julgamento — nenhuma ideia é "boba" durante a geração</li>
+        <li>Encorajar ideias selvagens — o impossível de hoje pode inspirar o possível de amanhã</li>
+        <li>Construir sobre as ideias dos outros — "sim, e..." em vez de "não, porque..."</li>
+        <li>Manter o foco — uma conversa de cada vez</li>
+        <li>Ser visual — use post-its, desenhos, esquemas</li>
+        <li>Quantidade é qualidade — nessa etapa</li>
+      </ul>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 5 ════════════════════════════════ -->
+  <section id="s5">
+    <div class="section-title">
+      <div class="section-num">5</div>
+      <h2>Etapa 4 — Prototipação</h2>
+    </div>
+
+    <p>Um protótipo é qualquer representação tangível de uma ideia, com custo e tempo mínimos, criado para
+      <strong>aprender</strong> — não para impressionar. O objetivo é transformar conceitos abstratos em algo
+      que possa ser testado com usuários reais.</p>
+
+    <div class="box box-dica">
+      <strong>💡 "Se uma imagem vale mil palavras, um protótipo vale mil reuniões."</strong>
+      — Tom e David Kelley, IDEO.<br>
+      Protótipos evitam discussões intermináveis sobre como algo deveria funcionar. Eles mostram.
+    </div>
+
+    <h3>Níveis de fidelidade de protótipos</h3>
+
+    <table>
+      <tr>
+        <th>Nível</th>
+        <th>Ferramentas</th>
+        <th>Custo / Tempo</th>
+        <th>Quando usar</th>
+      </tr>
+      <tr>
+        <td><strong>Papel (Wireframe)</strong></td>
+        <td>Papel, caneta, post-it</td>
+        <td>Minutos</td>
+        <td>Validar fluxos e estrutura</td>
+      </tr>
+      <tr>
+        <td><strong>Baixa fidelidade</strong></td>
+        <td>Balsamiq, Marvel App, Figma (esboço)</td>
+        <td>Horas</td>
+        <td>Testar navegação entre telas</td>
+      </tr>
+      <tr>
+        <td><strong>Média fidelidade</strong></td>
+        <td>Figma, Adobe XD (com interação)</td>
+        <td>Dias</td>
+        <td>Validar UX antes de codificar</td>
+      </tr>
+      <tr>
+        <td><strong>Alta fidelidade (MVP)</strong></td>
+        <td>Código real, versão mínima funcional</td>
+        <td>Semanas</td>
+        <td>Validar a solução em produção real</td>
+      </tr>
+    </table>
+
+    <h3>Princípios da Prototipação</h3>
+
+    <div class="processo">
+      <div class="processo-item">
+        <div class="processo-num">1</div>
+        <div class="processo-body">
+          <h4>Construa para aprender, não para mostrar</h4>
+          <p>O protótipo deve responder a uma pergunta específica sobre o produto.
+            "Os usuários entendem que esse botão confirma o agendamento?"</p>
+        </div>
+      </div>
+      <div class="processo-item">
+        <div class="processo-num">2</div>
+        <div class="processo-body">
+          <h4>Seja rápido e barato</h4>
+          <p>Invista só o suficiente para obter feedback útil. Um protótipo de papel
+            leva 15 minutos e já pode revelar problemas críticos de fluxo.</p>
+        </div>
+      </div>
+      <div class="processo-item">
+        <div class="processo-num">3</div>
+        <div class="processo-body">
+          <h4>Não se apegue</h4>
+          <p>Protótipos devem ser fáceis de jogar fora. O apego emocional ao que
+            foi construído é um dos maiores inimigos da inovação.</p>
+        </div>
+      </div>
+      <div class="processo-item">
+        <div class="processo-num">4</div>
+        <div class="processo-body">
+          <h4>Um protótipo por hipótese</h4>
+          <p>Se você tem dúvida sobre o fluxo de cadastro E sobre o sistema de notificações,
+            crie dois protótipos separados. Misturar variáveis confunde o feedback.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="exemplo-real">
+      <div class="label">📌 Exemplo Prático — Prototipação em papel</div>
+      <h4>App de Agendamento — Versão 0 (Papel)</h4>
+      <p>A equipe usa papel A4 cortado no tamanho de um smartphone. Cada folha representa uma tela.</p>
+      <p>Telas criadas: (1) Tela inicial com botão "Agendar", (2) Seleção de especialidade, (3) Calendário
+        simplificado, (4) Confirmação com nome do médico e horário.</p>
+      <p><strong>Resultado do teste:</strong> 3 de 5 usuários não entenderam que deveriam clicar no calendário
+        para selecionar a data. A solução foi adicionar uma seta indicativa e um texto "Toque para escolher".
+        Custo da correção: 30 segundos com uma caneta.</p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 6 ════════════════════════════════ -->
+  <section id="s6">
+    <div class="section-title">
+      <div class="section-num">6</div>
+      <h2>Etapa 5 — Testes</h2>
+    </div>
+
+    <p>A fase de testes é onde os protótipos encontram os usuários reais. O objetivo não é provar que a solução
+      funciona, mas <strong>aprender</strong> o que precisa ser melhorado. O feedback negativo é o mais
+      valioso.</p>
+
+    <div class="box box-aviso">
+      <strong>⚠️ Erro clássico nos testes</strong>
+      Conduzir o usuário: "Você conseguiu agendar, né? Ficou fácil?" — essa pergunta induz a resposta.
+      O correto é: "Mostre-me o que você faria para marcar uma consulta para semana que vem."
+      E então, <em>silêncio</em>. Observe. Não ajude. A confusão do usuário é o dado mais valioso.
+    </div>
+
+    <h3>Como conduzir um teste de usabilidade</h3>
+
+    <div class="processo">
+      <div class="processo-item">
+        <div class="processo-num">1</div>
+        <div class="processo-body">
+          <h4>Defina os cenários de teste</h4>
+          <p>Elabore tarefas realistas: "Imagine que você está com dor de cabeça há 3 dias.
+            Use o aplicativo para marcar uma consulta com um neurologista para esta semana."</p>
+        </div>
+      </div>
+      <div class="processo-item">
+        <div class="processo-num">2</div>
+        <div class="processo-body">
+          <h4>Recrute de 3 a 5 participantes</h4>
+          <p>Nielsen Norman Group comprovou que 5 usuários revelam ~85% dos problemas de usabilidade.
+            Mais que isso tem retorno decrescente.</p>
+        </div>
+      </div>
+      <div class="processo-item">
+        <div class="processo-num">3</div>
+        <div class="processo-body">
+          <h4>Peça que "pensem em voz alta"</h4>
+          <p>O usuário verbaliza o que está pensando enquanto navega: "Estou procurando um botão de
+            confirmação... acho que é esse aqui... hmm, não tenho certeza."</p>
+        </div>
+      </div>
+      <div class="processo-item">
+        <div class="processo-num">4</div>
+        <div class="processo-body">
+          <h4>Observe, registre, não interfira</h4>
+          <p>Um integrante conduz a sessão. Outro anota os pontos de confusão, erros e comentários
+            espontâneos. Grave com permissão sempre que possível.</p>
+        </div>
+      </div>
+      <div class="processo-item">
+        <div class="processo-num">5</div>
+        <div class="processo-body">
+          <h4>Analise e itere</h4>
+          <p>Reúna o time, classifique os problemas por frequência e impacto, e decida o que muda
+            no próximo ciclo do protótipo.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Métricas de teste simples</h3>
+
+    <table>
+      <tr>
+        <th>Métrica</th>
+        <th>O que mede</th>
+        <th>Como coletar</th>
+      </tr>
+      <tr>
+        <td><strong>Taxa de sucesso da tarefa</strong></td>
+        <td>% de usuários que completaram a tarefa sem ajuda</td>
+        <td>Observação direta (sim/não)</td>
+      </tr>
+      <tr>
+        <td><strong>Tempo por tarefa</strong></td>
+        <td>Quanto tempo levou para completar</td>
+        <td>Cronômetro</td>
+      </tr>
+      <tr>
+        <td><strong>Número de erros</strong></td>
+        <td>Quantas ações erradas o usuário tomou</td>
+        <td>Anotação durante a sessão</td>
+      </tr>
+      <tr>
+        <td><strong>SUS (System Usability Scale)</strong></td>
+        <td>Percepção geral de usabilidade (0–100)</td>
+        <td>Questionário de 10 perguntas após o teste</td>
+      </tr>
+    </table>
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 7 ════════════════════════════════ -->
+  <section id="s7">
+    <div class="section-title">
+      <div class="section-num">7</div>
+      <h2>Design Thinking no Desenvolvimento de Software</h2>
+    </div>
+
+    <p>O Design Thinking se encaixa naturalmente no início do ciclo de desenvolvimento de software, na fase de
+      <strong>descoberta e definição</strong>, antes mesmo de abrir o editor de código.</p>
+
+    <h3>DT + Scrum: onde cada um atua</h3>
+
+    <div class="diagrama"><span class="dest">CICLO DESIGN THINKING + SCRUM</span>
+
+<span class="amarelo">─── ANTES DO SCRUM (Design Thinking) ──────────────────────</span>
+
+  Semanas 1–2: Empatia         → Pesquisa com usuários, entrevistas
+  Semanas 2–3: Definição       → POV, HMW, mapa de problemas
+  Semanas 3–4: Ideação         → Brainstorming, priorização
+  Semanas 4–5: Prototipação    → Wireframes, mockups no Figma
+  Semanas 5–6: Testes          → Validação com usuários
+
+<span class="verde">─── SCRUM (com entendimento validado) ─────────────────────</span>
+
+  Sprint 0:  Setup, backlog refinado com base no DT
+  Sprint 1:  Funcionalidades core validadas no protótipo
+  Sprint 2+: Entregas iterativas com feedback contínuo
+
+<span class="roxo">─── RESULTADO ──────────────────────────────────────────────</span>
+
+  O time entra no desenvolvimento sabendo EXATAMENTE
+  o que precisa construir e POR QUÊ cada feature importa.</div>
+
+    <div class="box box-info">
+      <strong>✅ DT gera insumo direto para o backlog</strong>
+      As perguntas HMW viram Épicos → As soluções priorizadas viram User Stories → Os testes validam
+      os critérios de aceite. O Design Thinking e o Scrum são complementares, não concorrentes.
+    </div>
+
+    <h3>Empresas que usam Design Thinking em software</h3>
+
+    <table>
+      <tr>
+        <th>Empresa</th>
+        <th>Aplicação</th>
+        <th>Resultado</th>
+      </tr>
+      <tr>
+        <td><strong>IBM</strong></td>
+        <td>IBM Design Thinking integrado ao desenvolvimento ágil em todos os produtos</td>
+        <td>Redução de 75% no tempo de desenvolvimento de software</td>
+      </tr>
+      <tr>
+        <td><strong>Airbnb</strong></td>
+        <td>Entrevistas e prototipação para o fluxo de checkout e perfil de anfitriões</td>
+        <td>Aumento de 3x nas conversões após redesign baseado em empatia</td>
+      </tr>
+      <tr>
+        <td><strong>GE Healthcare</strong></td>
+        <td>DT aplicado às interfaces de tomógrafos — observação com crianças pacientes</td>
+        <td>Redução de 80% no uso de sedação em crianças</td>
+      </tr>
+    </table>
+
+    <hr class="divisor">
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 8 ════════════════════════════════ -->
+  <section id="s8">
+    <div class="section-title">
+      <div class="section-num">8</div>
+      <h2>O que é Lean?</h2>
+    </div>
+
+    <p>O <strong>Lean</strong> é uma filosofia de gestão que nasceu nas fábricas da Toyota nos anos 1950,
+      conhecida como <strong>Toyota Production System (TPS)</strong>. Seu objetivo central é
+      <strong>maximizar o valor entregue ao cliente eliminando tudo que não agrega valor</strong> —
+      os chamados desperdícios (<em>muda</em>, em japonês).</p>
+
+    <p>Nos anos 2000, os engenheiros de software Mary e Tom Poppendieck publicaram "Lean Software Development",
+      traduzindo os princípios Lean para o contexto do desenvolvimento de software.</p>
+
+    <div class="box box-dica">
+      <strong>💡 A mentalidade Lean em uma frase</strong>
+      "Produza exatamente o que o cliente precisa, no momento em que precisa, sem desperdício,
+      com qualidade perfeita." — Taiichi Ohno, criador do TPS/Toyota.
+    </div>
+
+    <h3>Lean vs. Abordagem Tradicional</h3>
+
+    <div class="comparativo">
+      <div class="comp-card">
+        <h4>❌ Abordagem Tradicional</h4>
+        <ul>
+          <li>Produz o máximo possível (push)</li>
+          <li>Grandes lotes de trabalho</li>
+          <li>Qualidade verificada no final</li>
+          <li>Decisões tomadas no início</li>
+          <li>Informação silos entre times</li>
+          <li>Foco em manter todos ocupados</li>
+          <li>Erro = falha do indivíduo</li>
+        </ul>
+      </div>
+      <div class="comp-card" style="border-left:3px solid var(--verde)">
+        <h4>✅ Lean</h4>
+        <ul>
+          <li>Produz o que o cliente pede (pull)</li>
+          <li>Pequenos lotes, fluxo contínuo</li>
+          <li>Qualidade embutida no processo</li>
+          <li>Decisões o mais tarde possível</li>
+          <li>Transparência e fluxo de informação</li>
+          <li>Foco em otimizar o fluxo</li>
+          <li>Erro = oportunidade do sistema melhorar</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>A origem: Toyota Production System</h3>
+
+    <div class="diagrama"><span class="dest">CASA DO TOYOTA PRODUCTION SYSTEM</span>
+
+           <span class="amarelo">┌────────────────────────────────────┐</span>
+           <span class="amarelo">│   MELHOR QUALIDADE · MENOR CUSTO   │</span>
+           <span class="amarelo">│     MENOR LEAD TIME · SEGURANÇA     │</span>
+           <span class="amarelo">└──────────────┬─────────────────────┘</span>
+                          │
+         ┌─────────────────────────────┐
+         │ <span class="verde">JUST-IN-TIME</span>   │ <span class="roxo">JIDOKA</span>        │
+         │ Peça certa    │ Automação   │
+         │ Hora certa    │ com toque   │
+         │ Qtd certa     │ humano      │
+         └───────────────┴─────────────┘
+                          │
+         ┌────────────────────────────┐
+         │  <span class="laranja">HEIJUNKA</span> (nivelamento)      │
+         │  <span class="laranja">KAIZEN</span>  (melhoria contínua)  │
+         │  <span class="laranja">TRABALHO PADRONIZADO</span>        │
+         └────────────────────────────┘
+                          │
+              ┌──────────────────────┐
+              │ <span class="dest">ESTABILIDADE DA BASE</span>  │
+              └──────────────────────┘</div>
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 9 ════════════════════════════════ -->
+  <section id="s9">
+    <div class="section-title">
+      <div class="section-num">9</div>
+      <h2>Os 7 Desperdícios do Lean</h2>
+    </div>
+
+    <p>Taiichi Ohno identificou 7 categorias de desperdício na manufatura. Mary Poppendieck adaptou cada uma
+      para o contexto do desenvolvimento de software. Reconhecer e eliminar esses desperdícios é o coração
+      do Lean.</p>
+
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Desperdício (Manufatura)</th>
+        <th>Equivalente em Software</th>
+        <th>Exemplo prático</th>
+      </tr>
+      <tr>
+        <td><strong>1</strong></td>
+        <td>Superprodução</td>
+        <td><strong>Funcionalidades extras</strong> (YAGNI)</td>
+        <td>Construir um módulo de relatórios complexo que nenhum usuário pediu</td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td>Espera</td>
+        <td><strong>Esperas no processo</strong></td>
+        <td>Dev terminou a feature mas aguarda 2 semanas pelo code review do tech lead</td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td>Transporte desnecessário</td>
+        <td><strong>Handoffs e transferências</strong></td>
+        <td>Requisito passa de negócio → analista → dev → QA → ops sem comunicação direta</td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td>
+        <td>Processamento extra</td>
+        <td><strong>Retrabalho e burocracia</strong></td>
+        <td>Preencher 3 formulários para abrir um ticket que será resolvido em 10 minutos</td>
+      </tr>
+      <tr>
+        <td><strong>5</strong></td>
+        <td>Estoque excessivo</td>
+        <td><strong>Trabalho em andamento (WIP) alto</strong></td>
+        <td>50 itens no backlog "em desenvolvimento" ao mesmo tempo, nenhum entregue</td>
+      </tr>
+      <tr>
+        <td><strong>6</strong></td>
+        <td>Movimento desnecessário</td>
+        <td><strong>Troca de contexto</strong></td>
+        <td>Desenvolvedor interrompido 8 vezes por dia para reuniões não relacionadas</td>
+      </tr>
+      <tr>
+        <td><strong>7</strong></td>
+        <td>Defeitos</td>
+        <td><strong>Bugs e retrabalho</strong></td>
+        <td>Bug encontrado em produção que existia há 3 sprints sem ser detectado</td>
+      </tr>
+    </table>
+
+    <div class="box box-laranja">
+      <strong>🔍 Poppendieck adicionou um 8º desperdício: Subutilização do talento humano</strong>
+      Não aproveitar o conhecimento, a criatividade e as habilidades das pessoas da equipe.
+      Exemplo: desenvolvedor sênior colocado para fazer apenas testes manuais repetitivos,
+      sem autonomia para melhorar o processo.
+    </div>
+
+    <h3>Identificando desperdícios com Value Stream Mapping</h3>
+
+    <div class="diagrama"><span class="dest">VALUE STREAM MAPPING — Exemplo: Entrega de Feature</span>
+
+<span class="amarelo">Etapa</span>               <span class="verde">Valor</span>    <span class="roxo">Espera</span>    <span class="laranja">Obs</span>
+────────────────────────────────────────────────────────
+Refinamento do requisito    2h        1 semana   <span class="laranja">← desperdício de espera</span>
+Desenvolvimento             8h        –
+Code Review                 1h        3 dias     <span class="laranja">← desperdício de espera</span>
+QA Funcional                2h        2 dias     <span class="laranja">← desperdício de espera</span>
+Deploy em homolog.          0.5h      1 dia      <span class="laranja">← desperdício de espera</span>
+Aprovação do PO             0.5h      4 dias     <span class="laranja">← desperdício de espera</span>
+Deploy em produção          0.5h      –
+────────────────────────────────────────────────────────
+<span class="amarelo">Total de trabalho real:</span>   14.5h
+<span class="roxo">Total de espera:</span>          ~17 dias
+
+<span class="dest">→ Apenas 3,5% do tempo é trabalho que agrega valor!</span>
+  Os outros 96,5% são espera — o maior desperdício.</div>
+
+    <div class="box box-info">
+      <strong>✅ Como eliminar?</strong>
+      Automatizar o deploy (CI/CD), estabelecer SLA de code review (máximo 4h), fazer PO disponível para
+      revisar diariamente. O VSM revela onde atacar primeiro para ter o maior impacto.
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 10 ════════════════════════════════ -->
+  <section id="s10">
+    <div class="section-title">
+      <div class="section-num">10</div>
+      <h2>Os 7 Princípios do Lean Software</h2>
+    </div>
+
+    <p>Mary e Tom Poppendieck sistematizaram os ensinamentos do Lean em 7 princípios fundamentais para o
+      desenvolvimento de software:</p>
+
+    <div class="processo">
+      <div class="processo-item">
+        <div class="processo-num">1</div>
+        <div class="processo-body">
+          <h4>Eliminar Desperdícios</h4>
+          <p>Tudo que não agrega valor ao cliente deve ser questionado e eliminado. Inclui código não usado,
+            documentação excessiva, funcionalidades que ninguém pediu e reuniões sem objetivo.</p>
+        </div>
+      </div>
+      <div class="processo-item">
+        <div class="processo-num">2</div>
+        <div class="processo-body">
+          <h4>Embutir Qualidade</h4>
+          <p>Qualidade deve ser construída no processo, não verificada no final. TDD, pair programming,
+            code review e integração contínua são práticas que embutem qualidade ao longo do desenvolvimento.</p>
+        </div>
+      </div>
+      <div class="processo-item">
+        <div class="processo-num">3</div>
+        <div class="processo-body">
+          <h4>Criar Conhecimento</h4>
+          <p>O desenvolvimento de software é um processo de aprendizado. Fazer experimentos, prototipar,
+            documentar decisões e realizar retrospectivas são formas de criar e preservar conhecimento.</p>
+        </div>
+      </div>
+      <div class="processo-item">
+        <div class="processo-num">4</div>
+        <div class="processo-body">
+          <h4>Adiar Comprometimentos</h4>
+          <p>Tomar decisões irreversíveis o mais tarde possível, quando há mais informação disponível.
+            Design de sistemas reversíveis, evitar over-engineering precoce. <em>"Preserve options."</em></p>
+        </div>
+      </div>
+      <div class="processo-item">
+        <div class="processo-num">5</div>
+        <div class="processo-body">
+          <h4>Entregar Rápido</h4>
+          <p>Valor entregue cedo é mais valioso que valor entregue tarde. Entregas frequentes geram
+            feedback real e permitem correções antes que o problema se torne grande e caro.</p>
+        </div>
+      </div>
+      <div class="processo-item">
+        <div class="processo-num">6</div>
+        <div class="processo-body">
+          <h4>Respeitar as Pessoas</h4>
+          <p>Times auto-organizados, autonomia, confiança mútua e ambiente seguro para errar e aprender.
+            Líderes Lean são treinadores (<em>coaches</em>), não gerentes de microgerenciamento.</p>
+        </div>
+      </div>
+      <div class="processo-item">
+        <div class="processo-num">7</div>
+        <div class="processo-body">
+          <h4>Otimizar o Todo</h4>
+          <p>Otimizar uma parte do sistema pode piorar o sistema inteiro. O fluxo completo de valor —
+            da ideia até o cliente — deve ser o alvo da otimização, não apenas uma etapa isolada.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box box-dica">
+      <strong>💡 Exemplo — Otimizar o Todo vs. Otimizar uma Parte</strong>
+      Um time de desenvolvimento conseguiu escrever código 50% mais rápido investindo em automação.
+      Porém, o QA continuava sendo o gargalo — testando manualmente 3× mais devagar que o time produzia.
+      A otimização isolada no dev <em>piorou</em> o tempo de entrega total porque acumulou fila no QA.
+      A solução Lean: otimizar a etapa gargalo (QA automatizado) antes de acelerar o desenvolvimento.
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 11 ════════════════════════════════ -->
+  <section id="s11">
+    <div class="section-title">
+      <div class="section-num">11</div>
+      <h2>Lean no Desenvolvimento de Software</h2>
+    </div>
+
+    <p>O Lean no software se manifesta em práticas concretas que podemos aplicar no dia a dia de uma equipe
+      de desenvolvimento:</p>
+
+    <h3>Práticas Lean em Software</h3>
+
+    <table>
+      <tr>
+        <th>Prática</th>
+        <th>Princípio Lean</th>
+        <th>Benefício</th>
+      </tr>
+      <tr>
+        <td><strong>Limitar WIP (Work in Progress)</strong></td>
+        <td>Eliminar desperdício (estoque)</td>
+        <td>Menos context switching, mais fluxo</td>
+      </tr>
+      <tr>
+        <td><strong>CI/CD (Integração e Entrega Contínua)</strong></td>
+        <td>Entregar rápido + embutir qualidade</td>
+        <td>Feedback rápido, bugs detectados cedo</td>
+      </tr>
+      <tr>
+        <td><strong>MVP (Produto Mínimo Viável)</strong></td>
+        <td>Eliminar desperdício + entregar rápido</td>
+        <td>Aprender com usuários reais antes de construir tudo</td>
+      </tr>
+      <tr>
+        <td><strong>Automação de testes</strong></td>
+        <td>Embutir qualidade</td>
+        <td>Elimina retrabalho, documentação viva</td>
+      </tr>
+      <tr>
+        <td><strong>Pair Programming</strong></td>
+        <td>Criar conhecimento + embutir qualidade</td>
+        <td>Menos bugs, transferência de conhecimento</td>
+      </tr>
+      <tr>
+        <td><strong>Retrospectivas</strong></td>
+        <td>Criar conhecimento (Kaizen)</td>
+        <td>Melhoria contínua do processo</td>
+      </tr>
+      <tr>
+        <td><strong>Feature Flags</strong></td>
+        <td>Adiar comprometimentos</td>
+        <td>Deploy sem exposição, testes A/B</td>
+      </tr>
+    </table>
+
+    <h3>Kaizen: melhoria contínua</h3>
+
+    <div class="diagrama"><span class="dest">CICLO KAIZEN (Plan-Do-Check-Act)</span>
+
+          <span class="amarelo">┌──────── PLAN ────────┐</span>
+          │ Identificar o       │
+          │ problema e planejar │
+          │ a melhoria          │
+          └──────────┬──────────┘
+                     │
+    <span class="laranja">ACT</span> ◄──────────────────── <span class="verde">DO</span>
+    Padronizar a               Implementar
+    melhoria ou                a mudança em
+    recomeçar o ciclo          pequena escala
+          │                         │
+          └─────── <span class="roxo">CHECK</span> ──────────┘
+                 Medir resultados
+                 e comparar com
+                 o esperado
+
+<span class="dest">No Software:</span>
+  PLAN:  Retrospectiva identifica: "Code reviews demoram 3 dias"
+  DO:    Testar SLA de 4h por 2 semanas
+  CHECK: Medir tempo médio de review e taxa de bugs em produção
+  ACT:   Se melhorou → padronizar. Se não → tentar outra abordagem</div>
+
+    <div class="exemplo-real">
+      <div class="label">📌 Exemplo Real — Spotify e Lean</div>
+      <h4>O modelo de squads do Spotify</h4>
+      <p>O Spotify adaptou o Lean criando squads autônomas (times pequenos com todo conhecimento necessário),
+        tribes (grupos de squads com missão comum), chapters (comunidades de prática) e guilds (grupos de
+        interesse voluntário).</p>
+      <p>O resultado é um sistema que elimina o desperdício de handoffs entre times, respeita as pessoas com
+        autonomia total, e otimiza o todo ao alinhar missões claras para cada squad.</p>
+      <p><strong>Lean aplicado:</strong> Cada squad é responsável por todo o ciclo — concepção, desenvolvimento,
+        teste e operação. Nenhuma espera entre departamentos.</p>
+    </div>
+
+    <hr class="divisor">
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 12 ════════════════════════════════ -->
+  <section id="s12">
+    <div class="section-title">
+      <div class="section-num">12</div>
+      <h2>O Manifesto Ágil</h2>
+    </div>
+
+    <p>Em fevereiro de 2001, 17 desenvolvedores se reuniram em Snowbird, Utah (EUA) e redigiram o
+      <strong>Manifesto para o Desenvolvimento Ágil de Software</strong>. Em poucas linhas, eles definiram
+      uma nova forma de pensar sobre o desenvolvimento — fortemente influenciada pelos princípios Lean.</p>
+
+    <div class="box box-roxo">
+      <strong>📜 Os 4 Valores do Manifesto Ágil (texto oficial)</strong><br><br>
+      Estamos descobrindo maneiras melhores de desenvolver software, fazendo-o nós mesmos e ajudando outros a
+      fazerem o mesmo. Através desse trabalho, passamos a valorizar:<br><br>
+      <strong>Indivíduos e interações</strong> mais que processos e ferramentas<br>
+      <strong>Software em funcionamento</strong> mais que documentação abrangente<br>
+      <strong>Colaboração com o cliente</strong> mais que negociação de contratos<br>
+      <strong>Responder a mudanças</strong> mais que seguir um plano<br><br>
+      Ou seja, mesmo havendo valor nos itens à direita, valorizamos mais os itens à esquerda.
+    </div>
+
+    <h3>Os 12 Princípios Ágeis</h3>
+
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Princípio</th>
+        <th>Relação com Lean</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Satisfazer o cliente através de entrega contínua e adiantada de software com valor</td>
+        <td>Entregar rápido / Eliminar desperdício</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Aceitar mudanças de requisitos, mesmo no fim do desenvolvimento</td>
+        <td>Adiar comprometimentos</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Entregar frequentemente software funcionando (semanas a meses)</td>
+        <td>Entregar rápido / Pequenos lotes</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Pessoas de negócio e desenvolvedores trabalhando juntos diariamente</td>
+        <td>Eliminar handoffs / Otimizar o todo</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Construir projetos em torno de indivíduos motivados; dar suporte e confiança</td>
+        <td>Respeitar as pessoas</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Conversa face a face é o método mais eficiente de transmitir informações</td>
+        <td>Eliminar desperdício de comunicação</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>Software funcionando é a medida primária de progresso</td>
+        <td>Foco em valor, não em atividade</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>Processos ágeis promovem desenvolvimento sustentável</td>
+        <td>Respeitar as pessoas / Heijunka</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td>Contínua atenção à excelência técnica e bom design aumenta a agilidade</td>
+        <td>Embutir qualidade</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td>Simplicidade: a arte de maximizar o trabalho não realizado</td>
+        <td>Eliminar desperdício (YAGNI)</td>
+      </tr>
+      <tr>
+        <td>11</td>
+        <td>As melhores arquiteturas emergem de times auto-organizados</td>
+        <td>Respeitar as pessoas / Empoderar</td>
+      </tr>
+      <tr>
+        <td>12</td>
+        <td>Em intervalos regulares, o time reflete e ajusta seu comportamento</td>
+        <td>Kaizen / Melhoria contínua</td>
+      </tr>
+    </table>
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 13 ════════════════════════════════ -->
+  <section id="s13">
+    <div class="section-title">
+      <div class="section-num">13</div>
+      <h2>Lean vs. Ágil — Diferenças e Semelhanças</h2>
+    </div>
+
+    <p>Lean e Ágil são frequentemente usados como sinônimos, mas têm origens, focos e escopos diferentes.
+      Entender essa diferença evita confusões na prática.</p>
+
+    <table>
+      <tr>
+        <th>Aspecto</th>
+        <th>Lean</th>
+        <th>Ágil</th>
+      </tr>
+      <tr>
+        <td><strong>Origem</strong></td>
+        <td>Manufatura (Toyota, 1950s)</td>
+        <td>Software (Manifesto, 2001)</td>
+      </tr>
+      <tr>
+        <td><strong>Foco principal</strong></td>
+        <td>Eliminar desperdício e otimizar o fluxo</td>
+        <td>Responder a mudanças e entregar valor</td>
+      </tr>
+      <tr>
+        <td><strong>Escopo</strong></td>
+        <td>Toda a cadeia de valor (processo de ponta a ponta)</td>
+        <td>O time de desenvolvimento e suas práticas</td>
+      </tr>
+      <tr>
+        <td><strong>Abordagem</strong></td>
+        <td>Filosofia e conjunto de ferramentas</td>
+        <td>Valores, princípios e frameworks (Scrum, XP)</td>
+      </tr>
+      <tr>
+        <td><strong>Ciclo de melhoria</strong></td>
+        <td>Kaizen — melhoria contínua e incremental</td>
+        <td>Retrospectivas ao fim de cada sprint</td>
+      </tr>
+      <tr>
+        <td><strong>Lote de trabalho</strong></td>
+        <td>Fluxo contínuo (ideal), pull system</td>
+        <td>Sprints/iterações de 1–4 semanas</td>
+      </tr>
+      <tr>
+        <td><strong>Métricas primárias</strong></td>
+        <td>Lead time, cycle time, taxa de defeitos</td>
+        <td>Velocity, burndown, taxa de entrega</td>
+      </tr>
+    </table>
+
+    <div class="box box-info">
+      <strong>✅ Relação real: Ágil é filho do Lean</strong>
+      O Manifesto Ágil foi fortemente inspirado pelo Lean. Os autores citaram explicitamente o Lean e o
+      Sistema Toyota como influências. Pode-se dizer que o Ágil é uma aplicação dos princípios Lean
+      especificamente para o contexto do desenvolvimento de software.
+    </div>
+
+    <h3>Kanban: a ponte entre Lean e Ágil</h3>
+
+    <div class="diagrama"><span class="dest">KANBAN: nascido no Lean, adotado pelo Ágil</span>
+
+<span class="amarelo">ORIGEM LEAN (Toyota)</span>              <span class="verde">ADOÇÃO ÁGIL (Software)</span>
+Cartões físicos em                   Quadros digitais
+fábricas para controlar             (Trello, Jira, GitHub)
+produção sob demanda                 para gerenciar tarefas
+
+Pull system: a estação              Pull system: dev "puxa"
+downstream puxa o trabalho          o próximo item do backlog
+da upstream                         quando termina o atual
+
+Limite de WIP:                      Limite de WIP:
+máximo de peças por                 máximo de cards por
+etapa do processo                   coluna do quadro
+
+<span class="dest">Resultado em ambos os casos:</span>
+  → Visualização do trabalho
+  → Identificação de gargalos
+  → Fluxo mais previsível
+  → Entrega mais rápida</div>
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 14 ════════════════════════════════ -->
+  <section id="s14">
+    <div class="section-title">
+      <div class="section-num">14</div>
+      <h2>Lean + Design Thinking + Ágil Juntos</h2>
+    </div>
+
+    <p>As três abordagens são complementares. Cada uma responde a uma pergunta diferente e atua em um momento
+      diferente do ciclo de criação de software:</p>
+
+    <div class="diagrama"><span class="dest">TRIPLE DIAMOND: DT + LEAN + ÁGIL</span>
+
+<span class="amarelo">DESCOBERTA (Design Thinking)</span>
+"Estamos resolvendo o problema certo?"
+   Empatia → Definição → Ideação → Prototipação → Testes
+                          │
+                          ▼
+<span class="roxo">DECISÃO (Lean)</span>
+"Como eliminamos desperdício nesse processo?"
+   VSM → Identificar gargalos → Otimizar fluxo
+   Priorizar apenas o que gera valor para o cliente
+                          │
+                          ▼
+<span class="verde">ENTREGA (Ágil)</span>
+"Estamos entregando o produto certo, da forma certa?"
+   Sprint → Build → Test → Review → Retrospectiva
+   Feedback contínuo → Adaptar → Próxima sprint
+
+──────────────────────────────────────────────────
+<span class="dest">Resultado:</span> O time constrói a coisa CERTA (DT),
+           da forma EFICIENTE (Lean),
+           com velocidade e adaptabilidade (Ágil).</div>
+
+    <h3>Como eles se encaixam na prática</h3>
+
+    <table>
+      <tr>
+        <th>Pergunta</th>
+        <th>Abordagem</th>
+        <th>Ferramentas</th>
+      </tr>
+      <tr>
+        <td>Estamos resolvendo o problema certo?</td>
+        <td><span class="tag-azul">Design Thinking</span></td>
+        <td>Entrevistas, Mapa de Empatia, POV, HMW</td>
+      </tr>
+      <tr>
+        <td>O que tem mais valor para o cliente agora?</td>
+        <td><span class="tag-azul">DT</span> + <span class="tag-verde">Lean</span></td>
+        <td>Matriz de priorização, WSJF, MoSCoW</td>
+      </tr>
+      <tr>
+        <td>Como reduzimos desperdício no processo?</td>
+        <td><span class="tag-verde">Lean</span></td>
+        <td>VSM, Kaizen, limitar WIP</td>
+      </tr>
+      <tr>
+        <td>Como organizamos o trabalho em ciclos?</td>
+        <td><span class="tag-roxo">Ágil</span></td>
+        <td>Scrum, Kanban, XP</td>
+      </tr>
+      <tr>
+        <td>Como verificamos que entregamos valor?</td>
+        <td><span class="tag-verde">Lean</span> + <span class="tag-roxo">Ágil</span></td>
+        <td>Métricas de produto, OKRs, testes de usabilidade</td>
+      </tr>
+      <tr>
+        <td>Como melhoramos continuamente?</td>
+        <td><span class="tag-verde">Lean</span> + <span class="tag-roxo">Ágil</span></td>
+        <td>Retrospectivas, Kaizen, blameless postmortems</td>
+      </tr>
+    </table>
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 15 ════════════════════════════════ -->
+  <section id="s15">
+    <div class="section-title">
+      <div class="section-num">15</div>
+      <h2>Casos Práticos</h2>
+    </div>
+
+    <h3>Caso 1 — Startup de Delivery: DT + Lean</h3>
+
+    <div class="exemplo-real">
+      <div class="label">📌 Caso Prático 1</div>
+      <h4>App de delivery local — da ideia ao MVP em 6 semanas</h4>
+      <p><strong>Contexto:</strong> Uma startup quer criar um app de delivery para restaurantes locais
+        de uma cidade do interior. O time tem 4 desenvolvedores e 6 semanas.</p>
+
+      <p><strong>Semana 1–2 (Design Thinking — Empatia):</strong> Entrevistaram 12 donos de restaurante e
+        20 clientes potenciais. Descoberta chave: 70% dos donos já usavam WhatsApp para receber pedidos e
+        consideravam os apps grandes "caros e complicados". Os clientes queriam poder rastrear o pedido
+        em tempo real.</p>
+
+      <p><strong>Semana 2 (Design Thinking — Definição):</strong>
+        POV: "João, dono de restaurante de bairro, precisa de uma forma simples de gerenciar pedidos digitais
+        porque não tem tempo nem dinheiro para aprender sistemas complexos e caros."</p>
+
+      <p><strong>Semana 3 (DT — Ideação + Lean — Priorização):</strong> 40 ideias geradas. Aplicaram a
+        matriz impacto × esforço e eliminaram 32 delas. Focaram no essencial: receber pedido, confirmar,
+        indicar "saiu para entrega". Tudo mais foi cortado (princípio Lean: YAGNI).</p>
+
+      <p><strong>Semanas 4–6 (Ágil — 2 sprints):</strong> Entregaram MVP funcional. Onze restaurantes
+        aderiram na primeira semana. O módulo de relatórios "incrível" que o CEO queria foi adiado para
+        depois — nenhum restaurante pediu por ele.</p>
+    </div>
+
+    <h3>Caso 2 — Time de TI corporativo: Lean + Ágil</h3>
+
+    <div class="exemplo-real">
+      <div class="label">📌 Caso Prático 2</div>
+      <h4>Time de desenvolvimento interno: eliminando desperdícios reais</h4>
+      <p><strong>Problema:</strong> Um time de 8 devs em uma empresa de logística entregava features com
+        média de 45 dias de lead time. A sprint era de 2 semanas, mas o item só ficava pronto para o
+        usuário 45 dias depois.</p>
+
+      <p><strong>Aplicação do VSM (Lean):</strong> Mapearam o fluxo completo. Resultado:</p>
+      <p>Desenvolvimento: 3 dias. Revisão de código: 8 dias (sem SLA). QA: 5 dias. Aprovação do gerente:
+        12 dias. Deploy (processo manual): 2 dias. Total de esperas: 42 dos 45 dias.</p>
+
+      <p><strong>Ações Lean tomadas:</strong>
+        (1) SLA de code review: máximo 1 dia útil.
+        (2) QA automatizado: reduziu para 1 dia.
+        (3) Deploy automatizado com CI/CD: de 2 dias para 15 minutos.
+        (4) Gerente delegou aprovações para PO.</p>
+
+      <p><strong>Resultado após 60 dias:</strong> Lead time caiu de 45 para 9 dias. A velocidade do código
+        não mudou — apenas o desperdício foi removido.</p>
+    </div>
+
+    <h3>Caso 3 — Projeto acadêmico: DT + Lean + Ágil</h3>
+
+    <div class="exemplo-real">
+      <div class="label">📌 Caso Prático 3 — Contexto ADS</div>
+      <h4>Sistema de controle de frequência para escola municipal</h4>
+      <p><strong>Contexto:</strong> Time de 4 alunos do 5º semestre de ADS desenvolvendo um sistema para
+        controle de frequência de alunos para uma escola pública.</p>
+
+      <p><strong>DT (Semanas 1–2):</strong> Entrevistaram 3 professores e 2 coordenadores. Insight principal:
+        "A gente já tem planilha no Excel que funciona. O que precisamos é que o pai seja notificado
+        automaticamente quando o filho faltar." — Coordenadora pedagógica.</p>
+
+      <p><strong>Lean (Definição do escopo):</strong> De 15 funcionalidades iniciais listadas pelo "cliente",
+        apenas 4 realmente geravam valor: registrar presença, gerar relatório mensal, enviar notificação
+        ao responsável, dashboard para coordenação. As 11 restantes foram descartadas (YAGNI).</p>
+
+      <p><strong>Ágil (Sprint 1–3):</strong> Sprint 1: cadastro de turmas e alunos. Sprint 2: registro de
+        presença e relatório. Sprint 3: notificação por e-mail e dashboard. Cada sprint entregou algo
+        funcional testado com um professor real.</p>
+
+      <p><strong>Resultado:</strong> Sistema entregue em 9 semanas, adotado em 2 turmas piloto no semestre
+        seguinte. O "projeto ideal" sem o DT/Lean teria levado 6 meses e provavelmente nunca seria usado.</p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ SEÇÃO 16 ════════════════════════════════ -->
+  <section id="s16">
+    <div class="section-title">
+      <div class="section-num">16</div>
+      <h2>Resumo e Mapa Mental</h2>
+    </div>
+
+    <h3>Comparativo rápido — As 3 abordagens</h3>
+
+    <table>
+      <tr>
+        <th>Aspecto</th>
+        <th>Design Thinking</th>
+        <th>Lean</th>
+        <th>Ágil</th>
+      </tr>
+      <tr>
+        <td><strong>Pergunta central</strong></td>
+        <td>Estamos resolvendo o problema certo?</td>
+        <td>Estamos fazendo sem desperdício?</td>
+        <td>Estamos entregando rápido e com qualidade?</td>
+      </tr>
+      <tr>
+        <td><strong>Origem</strong></td>
+        <td>Design / IDEO / Stanford</td>
+        <td>Manufatura / Toyota</td>
+        <td>Software / 17 desenvolvedores</td>
+      </tr>
+      <tr>
+        <td><strong>Foco</strong></td>
+        <td>Usuário e problema</td>
+        <td>Processo e fluxo</td>
+        <td>Time e entrega</td>
+      </tr>
+      <tr>
+        <td><strong>Ferramentas chave</strong></td>
+        <td>Empatia, POV, HMW, Protótipo</td>
+        <td>VSM, 7 desperdícios, Kaizen, Kanban</td>
+        <td>Scrum, Sprint, Retrospectiva, Backlog</td>
+      </tr>
+      <tr>
+        <td><strong>Resultado esperado</strong></td>
+        <td>Solução validada com usuário real</td>
+        <td>Processo otimizado sem desperdício</td>
+        <td>Software funcionando entregue rápido</td>
+      </tr>
+    </table>
+
+    <h3>Mapa mental — Conexões entre os conceitos</h3>
+
+    <div class="diagrama"><span class="dest">MAPA MENTAL — Design Thinking, Lean e Agilidade</span>
+
+<span class="amarelo">DESIGN THINKING</span>
+├── Empatia → Personas, Mapa de Empatia, Entrevistas
+├── Definição → POV, HMW, Declaração do problema
+├── Ideação → Brainstorming, SCAMPER, Crazy 8's
+├── Prototipação → Wireframe, Figma, MVP
+└── Testes → Usabilidade, Feedback, Iteração
+
+<span class="verde">LEAN SOFTWARE</span>
+├── Princípios → Eliminar desperdício, Embutir qualidade,
+│               Entregar rápido, Respeitar pessoas
+├── 7 Desperdícios → Superprodução, Espera, Defeitos,
+│                    Estoque (WIP), Handoffs, Retrabalho
+├── Ferramentas → VSM, Kaizen (PDCA), Kanban, CI/CD
+└── Cultura → Blameless, Times autônomos, Melhoria contínua
+
+<span class="roxo">MANIFESTO ÁGIL</span>
+├── 4 Valores → Indivíduos, Software funcionando,
+│               Colaboração, Responder a mudanças
+├── 12 Princípios → Entrega contínua, Aceitar mudanças,
+│                   Excelência técnica, Auto-organização
+└── Frameworks → Scrum, Kanban, XP, SAFe, LeSS
+
+<span class="dest">INTEGRAÇÃO</span>
+DT → "Construir a coisa certa"
+Lean → "Construir da forma certa"
+Ágil → "Construir rápido e bem"</div>
+
+    <h3>Glossário rápido</h3>
+
+    <table>
+      <tr>
+        <th>Termo</th>
+        <th>Significado</th>
+      </tr>
+      <tr><td><strong>Muda</strong></td><td>Desperdício (japonês)</td></tr>
+      <tr><td><strong>Kaizen</strong></td><td>Melhoria contínua (japonês)</td></tr>
+      <tr><td><strong>WIP</strong></td><td>Work In Progress — trabalho em andamento</td></tr>
+      <tr><td><strong>VSM</strong></td><td>Value Stream Mapping — mapeamento do fluxo de valor</td></tr>
+      <tr><td><strong>POV</strong></td><td>Point of View — declaração do problema centrada no usuário</td></tr>
+      <tr><td><strong>HMW</strong></td><td>How Might We? — "Como Poderíamos?", transforma problemas em oportunidades</td></tr>
+      <tr><td><strong>MVP</strong></td><td>Minimum Viable Product — produto mínimo viável para validar hipóteses</td></tr>
+      <tr><td><strong>YAGNI</strong></td><td>You Aren't Gonna Need It — não construa o que não foi pedido ainda</td></tr>
+      <tr><td><strong>Lead Time</strong></td><td>Tempo total desde a solicitação até a entrega</td></tr>
+      <tr><td><strong>Cycle Time</strong></td><td>Tempo que um item leva para passar pelo processo de desenvolvimento</td></tr>
+      <tr><td><strong>Pull System</strong></td><td>Sistema onde o trabalho é puxado pela demanda, não empurrado</td></tr>
+      <tr><td><strong>Persona</strong></td><td>Personagem fictício que representa o perfil do usuário típico</td></tr>
+      <tr><td><strong>Heijunka</strong></td><td>Nivelamento da produção — evitar picos e vales no trabalho</td></tr>
+      <tr><td><strong>Jidoka</strong></td><td>Automação com toque humano — parar o processo ao detectar defeito</td></tr>
+    </table>
+
+    <hr class="divisor">
+
+    <div class="box box-info">
+      <strong>✅ Para aprofundar os estudos</strong>
+      <ul>
+        <li><strong>Design Thinking:</strong> "Change by Design" — Tim Brown (IDEO)</li>
+        <li><strong>Lean:</strong> "Lean Software Development" — Mary e Tom Poppendieck</li>
+        <li><strong>Ágil:</strong> agilemanifesto.org (o manifesto original, em português)</li>
+        <li><strong>Integração:</strong> "The Lean Startup" — Eric Ries (DT + Lean + Ágil aplicados a startups)</li>
+        <li><strong>Prática:</strong> Crie um projeto pessoal aplicando as 5 etapas do DT antes de escrever uma linha de código</li>
+      </ul>
+    </div>
+
+    <div style="text-align:center; margin-top:50px; color:#888; font-size:13px;">
+      <p>Apostila — Design Thinking &amp; Lean e Agilidade &nbsp;|&nbsp; ADS — Gerenciamento Ágil de Projetos</p>
+      <p style="margin-top:6px;">Material didático para fins acadêmicos.</p>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.sidebar nav a');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('ativo'));
+        const ativo = document.querySelector(`.sidebar nav a[href="#${entry.target.id}"]`);
+        if (ativo) ativo.classList.add('ativo');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
